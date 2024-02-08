@@ -29,7 +29,7 @@ const apiControllers = {
                 if(apiData.length > 0){
 
                     apiData.forEach(repo =>{
-                        apiModels.saveRepoDataInDatabase(repo);
+                        apiModels.saveRepoDataInDatabase(repo, owner);
                     })
 
                     res.status(201).send({
@@ -43,6 +43,43 @@ const apiControllers = {
         }catch(error){
             console.log('Error >>', error)
             errorResponse(res, 'fetchAndStoreDataFromAPI', 'Internal Server Error', 500);
+        }
+    },
+
+    getAllRepositoryData: async(req, res)=>{
+        try{
+            let result = await apiModels.getAllRepositoryData();
+            if(result.rows.length > 0){
+                res.status(200).send({
+                    status: true,
+                    message:'Data found successfull',
+                    data: result.rows
+                })
+            }else{
+                errorResponse(res, 'getAllRepositoryData', 'No data found', 404);
+            }
+        }catch(error){
+            console.log('Error >>', error)
+            errorResponse(res, 'fetchAndStoreDataFromAPI', 'Internal Server Error', 500);
+        }
+    },
+
+    getAllRepositoryDataById: async(req, res)=>{
+        try{
+            let id = req.params.id;
+            let result = await apiModels.getAllRepositoryDataById(id);
+            if(result.rows.length > 0){
+                res.status(200).send({
+                    status: true,
+                    message:'Data found successfull',
+                    data: result.rows
+                })
+            }else{
+                errorResponse(res, 'getAllRepositoryData', 'No data found', 404);
+            }
+        }catch(error){
+            console.log('Error >>', error)
+            errorResponse(res, 'getAllRepositoryDataById', 'Internal Server Error', 500);
         }
     }
 };
